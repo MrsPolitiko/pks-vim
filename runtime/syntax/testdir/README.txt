@@ -63,9 +63,19 @@ script file will be sourced before any VIM_TEST_SETUP commands are executed.
 
 Every line of a source file must not be longer than 1425 (19 x 75) characters.
 
-If there is no further setup required, you can now run the tests:
+If there is no further setup required, you can now run all tests:
 
 	make test
+
+Or you can only run a matching subset of tests after assigning a regular
+expression to the VIM_SYNTAX_NAME_FILTER environment variable.  Consider
+quoting its value to avoid any interpretation by the shell.
+
+For example, to only run tests for Java, use any of:
+
+	make test -e 'VIM_SYNTAX_NAME_FILTER = \.java$'
+	make test VIM_SYNTAX_NAME_FILTER='\.java$'
+	VIM_SYNTAX_NAME_FILTER='\.java$' make test
 
 The first time this will fail with an error for a missing screendump.  The
 newly created screendumps will be "failed/java_00.dump",
@@ -206,5 +216,4 @@ screendumps will be shown with no difference between their versions):
 	../../../src/vim --clean -S viewdumps.vim
 
 
-TODO: run test for one specific filetype
 TODO: test syncing by jumping around

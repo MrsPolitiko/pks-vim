@@ -121,7 +121,10 @@ func RunTest()
     let fnames = readdir(dirpath, {fname -> fname !~ '^README\.txt$'})
   else
     let dirpath = 'input/'
-    let fnames = readdir(dirpath, {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$'})
+    let fnames = readdir(dirpath, !exists("$VIM_SYNTAX_NAME_FILTER")
+	\ ? {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$'}
+	\ : {filter -> {fname -> fname !~ '\~$' && fname =~ filter}}(
+			\ $VIM_SYNTAX_NAME_FILTER))
   endif
 
   for fname in fnames
