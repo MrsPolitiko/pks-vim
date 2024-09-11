@@ -116,15 +116,16 @@ func RunTest()
   let setup = glob('input/setup/*.vim', 1, 1)
     \ ->reduce({d, f -> extend(d, {fnamemodify(f, ':t:r'): f})}, {})
 
-  if exists("$VIM_SYNTAX_SELF_TESTING")
+  if exists("$VIM_SYNTAX_SELF_TESTING") && !empty($VIM_SYNTAX_SELF_TESTING)
     let dirpath = 'input/selftestdir/'
     let fnames = readdir(dirpath, {fname -> fname !~ '^README\.txt$'})
   else
     let dirpath = 'input/'
-    let fnames = readdir(dirpath, !exists("$VIM_SYNTAX_NAME_FILTER")
-	\ ? {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$'}
-	\ : {filter -> {fname -> fname !~ '\~$' && fname =~ filter}}(
-			\ $VIM_SYNTAX_NAME_FILTER))
+    let fnames = readdir(dirpath, exists("$VIM_SYNTAX_NAME_FILTER") &&
+				\ !empty($VIM_SYNTAX_NAME_FILTER)
+	\ ? {filter -> {fname -> fname !~ '\~$' && fname =~ filter}}(
+			\ $VIM_SYNTAX_NAME_FILTER)
+	\ : {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$'})
   endif
 
   for fname in fnames

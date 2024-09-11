@@ -19,12 +19,6 @@ ENVVARS = LC_ALL=C
 
 RUN_VIMTEST = VIMRUNTIME=$(VIMRUNTIME) $(VALGRIND) $(ENVVARS) ../$(VIMPROG) -f $(GUI_FLAG)
 
-# (For local testing only.)
-ifneq ($(MAKELEVEL),0)
-  override undefine VIM_SYNTAX_NAME_FILTER
-  override undefine VIM_SYNTAX_SELF_TESTING
-endif
-
 # Uncomment this line for debugging
 # DEBUGLOG = --log testlog
 
