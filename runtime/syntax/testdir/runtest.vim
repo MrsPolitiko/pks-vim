@@ -122,6 +122,7 @@ func RunTest()
   else
     let dirpath = 'input/'
     let fnames = readdir(dirpath, {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$'})
+    let fnames = readdir(dirpath, {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$' && fname =~ '\.vim$'})
   endif
 
   for fname in fnames
