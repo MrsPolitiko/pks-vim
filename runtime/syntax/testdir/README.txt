@@ -67,15 +67,18 @@ If there is no further setup required, you can now run all tests:
 
 	make test
 
-Or you can only run a matching subset of tests after assigning a regular
-expression to the VIM_SYNTAX_TEST_FILTER environment variable.  Consider
-quoting its value to avoid any interpretation by the shell.
+Or you can run the tests for a filetype only by passing the file extension as
+another target, e.g. "java", before "test":
 
-For example, to only run tests for Java, use any of:
+	make java test
 
-	make test -e 'VIM_SYNTAX_TEST_FILTER = \.java$'
-	make test VIM_SYNTAX_TEST_FILTER='\.java$'
-	VIM_SYNTAX_TEST_FILTER='\.java$' make test
+Or you can run a test or two by passing their basenames as extra targets, e.g.
+"java_comments" and "java_numbers", before "test":
+
+	make java_comments java_numbers test
+
+(Some interactive shells may attempt to perform word completion on arbitrary
+command arguments when you press certain keys, e.g. Tab or Ctrl-i.)
 
 The first time this will fail with an error for a missing screendump.  The
 newly created screendumps will be "failed/java_00.dump",

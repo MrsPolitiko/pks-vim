@@ -61,10 +61,6 @@ indenttest:
 # Executable used for running the syntax tests.
 VIM_FOR_SYNTAXTEST = ../../src/vim
 
-# (For local testing only with GMake.)
-VIM_SYNTAX_TEST_FILTER =
-VIM_SYNTAX_SELF_TESTING =
-
 syntaxtest:
 	cd runtime/syntax && \
 		$(MAKE) clean && \

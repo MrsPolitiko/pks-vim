@@ -31,10 +31,32 @@ test:
 	@echo "../$(VIMPROG)" > testdir/vimcmd
 	@echo "$(RUN_VIMTEST)" >> testdir/vimcmd
 	VIMRUNTIME=$(VIMRUNTIME) $(ENVVARS) $(VIMPROG) --clean --not-a-term $(DEBUGLOG) -u testdir/runtest.vim
+	@rm -f testdir/Xfilter
 	@# FIXME: Temporarily show the whole file to find out what goes wrong
 	@#if [ -f testdir/messages ]; then tail -n 6 testdir/messages; fi
 	@if [ -f testdir/messages ]; then cat testdir/messages; fi
 
 
 clean testclean:
-	rm -f testdir/failed/* testdir/done/* testdir/vimcmd testdir/messages testdir/Xtestscript
+	rm -f testdir/failed/* testdir/done/* testdir/vimcmd testdir/messages testdir/Xtestscript testdir/Xfilter
+
+# Collect unique basenames and file extensions from all input files.
+testnames != set +f; \
+awk 'BEGIN { \
+    for (i = 1; i < ARGC; i++) { \
+        split(ARGV[i], bases, /\//); \
+        split(bases[3], parts, /\./); \
+        uniqs[parts[1]]; \
+        uniqs[parts[2]]; \
+    } \
+    for (name in uniqs) \
+        print name; \
+}' testdir/input/*.*
+
+.PHONY: self-testing $(testnames)
+
+$(testnames)::
+	@echo $@ >> testdir/Xfilter
+
+self-testing:: $(testnames)
+	@echo self-testing > testdir/Xfilter
