@@ -40,13 +40,13 @@ test:
 clean testclean:
 	rm -f testdir/failed/* testdir/done/* testdir/vimcmd testdir/messages testdir/Xtestscript testdir/Xfilter
 
-# Collect unique basenames and file extensions from all input files.
+# Collect unique filenames and file extensions from all input files.
 testnames != set +f; \
 awk 'BEGIN { \
     for (i = 1; i < ARGC; i++) { \
-        split(ARGV[i], bases, /\//); \
-        split(bases[3], parts, /\./); \
-        uniqs[parts[1]]; \
+        split(ARGV[i], names, /\//); \
+        split(names[3], parts, /\./); \
+        uniqs[names[3]]; \
         uniqs[parts[2]]; \
     } \
     for (name in uniqs) \

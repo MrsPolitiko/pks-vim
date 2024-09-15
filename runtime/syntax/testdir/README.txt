@@ -72,10 +72,10 @@ another target, e.g. "java", before "test":
 
 	make java test
 
-Or you can run a test or two by passing their basenames as extra targets, e.g.
-"java_comments" and "java_numbers", before "test":
+Or you can run a test or two by passing their filenames as extra targets, e.g.
+"java_comments.java" and "java_numbers.java", before "test":
 
-	make java_comments java_numbers test
+	make java_comments.java java_numbers.java test
 
 (Some interactive shells may attempt to perform word completion on arbitrary
 command arguments when you press certain keys, e.g. Tab or Ctrl-i.)

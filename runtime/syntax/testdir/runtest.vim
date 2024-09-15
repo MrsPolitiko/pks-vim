@@ -115,21 +115,22 @@ func RunTest()
   " Create a map of setup configuration filenames with their basenames as keys.
   let setup = glob('input/setup/*.vim', 1, 1)
     \ ->reduce({d, f -> extend(d, {fnamemodify(f, ':t:r'): f})}, {})
-  " Turn a subset of basenames etc. requested for testing into a pattern.
+  " Turn a subset of filenames etc. requested for testing into a pattern.
   let filter = filereadable('../testdir/Xfilter')
     \ ? readfile('../testdir/Xfilter')
-	\ ->map({_, v -> v =~ '_' ? '^' .. v .. '\>' : '\.' .. v .. '$'})
+	\ ->map({_, v -> v =~ '\.' ? '^' .. v .. '\>' : '\.' .. v .. '$'})
 	\ ->join('\|')
     \ : ''
 
-  if filter =~# '\<self-testing\>'
+  " Treat "\.self-testing$" as a string NOT as a regexp.
+  if filter ==# '\.self-testing$'
     let dirpath = 'input/selftestdir/'
     let fnames = readdir(dirpath, {fname -> fname !~ '^README\.txt$'})
   else
     let dirpath = 'input/'
     let fnames = readdir(dirpath, empty(filter)
 	\ ? {fname -> fname !~ '\~$' && fname =~ '^.\+\..\+$'}
-	\ : {subset -> {fname -> fname !~ '\~$' && fname =~ subset}}(filter))
+	\ : {subset -> {fname -> fname !~ '\~$' && fname =~# subset}}(filter))
   endif
 
   for fname in fnames
