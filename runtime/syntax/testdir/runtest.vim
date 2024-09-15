@@ -117,10 +117,9 @@ func RunTest()
     \ ->reduce({d, f -> extend(d, {fnamemodify(f, ':t:r'): f})}, {})
   " Turn a subset of basenames etc. requested for testing into a pattern.
   let filter = filereadable('../testdir/Xfilter')
-    \ ? ({subset -> subset =~ '|' ? '\%(' .. subset .. '\)' : subset})(
-					\ readfile('../testdir/Xfilter')
+    \ ? readfile('../testdir/Xfilter')
 	\ ->map({_, v -> v =~ '_' ? '^' .. v .. '\>' : '\.' .. v .. '$'})
-	\ ->join('\|'))
+	\ ->join('\|')
     \ : ''
 
   if filter =~# '\<self-testing\>'
