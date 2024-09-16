@@ -46,8 +46,8 @@ awk 'BEGIN { \
     for (i = 1; i < ARGC; i++) { \
         split(ARGV[i], names, /\//); \
         split(names[3], parts, /\./); \
-        uniqs[names[3]]; \
         uniqs[parts[2]]; \
+        print names[3]; \
     } \
     for (name in uniqs) \
         print name; \
