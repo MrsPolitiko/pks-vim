@@ -40,17 +40,23 @@ test:
 clean testclean:
 	rm -f testdir/failed/* testdir/done/* testdir/vimcmd testdir/messages testdir/Xtestscript testdir/Xfilter
 
-# Collect unique filenames and file extensions from all input files.
+# All initial phony targets; these names may clash with file extensions.
+phonies = clean test testclean
+
+# Collect all input filenames and their file extensions.
 testnames != set +f; \
-awk 'BEGIN { \
+phonies="$(phonies)" awk 'BEGIN { \
     for (i = 1; i < ARGC; i++) { \
         split(ARGV[i], names, /\//); \
         split(names[3], parts, /\./); \
-        uniqs[parts[2]]; \
+        exts[parts[2]]; \
         print names[3]; \
     } \
-    for (name in uniqs) \
-        print name; \
+    split(ENVIRON["phonies"], scratch); \
+    for (phony in scratch) \
+        phonies[scratch[phony]]; \
+    for (ext in exts) \
+        print (ext in phonies) ? ext "_" : ext; \
 }' testdir/input/*.*
 
 .PHONY: self-testing $(testnames)
