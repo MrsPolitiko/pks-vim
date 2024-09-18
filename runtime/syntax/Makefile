@@ -45,18 +45,18 @@ phonies = clean test testclean
 
 # Collect all input filenames and their file extensions.
 testnames != set +f; \
-phonies="$(phonies)" awk 'BEGIN { \
+awk 'BEGIN { \
     for (i = 1; i < ARGC; i++) { \
         split(ARGV[i], names, /\//); \
         split(names[3], parts, /\./); \
         exts[parts[2]]; \
         print names[3]; \
     } \
-    split(ENVIRON["phonies"], scratch); \
+    split("$(phonies)", scratch); \
     for (phony in scratch) \
         phonies[scratch[phony]]; \
     for (ext in exts) \
-        print (ext in phonies) ? ext "_" : ext; \
+        print ext ((ext in phonies) ? "_" : ""); \
 }' testdir/input/*.*
 
 .PHONY: self-testing $(testnames)

@@ -73,8 +73,10 @@ another target, e.g. "java", before "test":
 	make java test
 
 Or you can run a test or two by passing their filenames as extra targets, e.g.
-"java_comments.java" and "java_numbers.java", before "test":
+"java_comments.java" and "java_numbers.java", before "test", after listing all
+available syntax tests for Java:
 
+	ls testdir/input/java*
 	make java_comments.java java_numbers.java test
 
 (Some interactive shells may attempt to perform word completion on arbitrary
