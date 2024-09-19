@@ -67,7 +67,7 @@ If there is no further setup required, you can now run all tests:
 
 	make test
 
-Or you can run the tests for a filetype only by passing the file extension as
+Or you can run the tests for a filetype only by passing its file extension as
 another target, e.g. "java", before "test":
 
 	make java test
@@ -82,8 +82,21 @@ available syntax tests for Java:
 (Some interactive shells may attempt to perform word completion on arbitrary
 command arguments when you press certain keys, e.g. Tab or Ctrl-i.)
 
-The first time this will fail with an error for a missing screendump.  The
-newly created screendumps will be "failed/java_00.dump",
+As an alternative, you can specify a subset of test filenames for running as
+a regular expression and assign it to a VIM_SYNTAX_TEST_FILTER environment
+variable; e.g. to run all tests whose base names contain "fold", use any of:
+
+	make test -e 'VIM_SYNTAX_TEST_FILTER = fold.*\..\+'
+	make test VIM_SYNTAX_TEST_FILTER='fold.*\..\+'
+	VIM_SYNTAX_TEST_FILTER='fold.*\..\+' make test
+
+Consider quoting the variable value to avoid any interpretation by the shell.
+
+Both Make targets and the variable may be used at the same time, the target
+names will tried for matching before the variable value.
+
+The first time testing "input/java.java" will fail with an error for a missing
+screendump.  The newly created screendumps will be "failed/java_00.dump",
 "failed/java_01.dump", etc.  You can inspect each with:
 
 	call term_dumpload('failed/java_00.dump')
