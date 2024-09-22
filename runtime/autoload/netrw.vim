@@ -5433,9 +5433,6 @@ fun! netrw#BrowseX(fname,remote)
     exe 'Open' fname
   endif
 
-  " restoring redraw! after external file handlers
-  redraw!
-
   " cleanup: remove temporary file,
   "          delete current buffer if success with handler,
   "          return to prior buffer (directory listing)
