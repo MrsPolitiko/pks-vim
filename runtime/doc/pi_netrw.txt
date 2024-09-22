@@ -1469,7 +1469,7 @@ With either form of the command, netrw will first ask for confirmation
 that the removal is in fact what you want to do.  If netrw doesn't have
 permission to remove a file, it will issue an error message.
 
-						*netrw-gx*
+						*netrw-gx* *Open* *Launch*
 CUSTOMIZING BROWSING WITH A SPECIAL HANDLER	*netrw-x* *netrw-handler* {{{2
 						(also see |netrw_filehandler|)
 
@@ -1480,25 +1480,19 @@ operating system).  Netrw allows one to invoke such special handlers by: >
 	* when Exploring, hit the "x" key
 	* when editing, hit gx with the cursor atop the special filename
 <	  (latter not available if the |g:netrw_nogx| variable exists)
+	* when in command line, typing :Open <path>
 
+(To launch a specific application <app>, type :Launch <app>.)
 Netrw determines which special handler by the following method:
 
   * if |g:netrw_browsex_viewer| exists, then it will be used to attempt to
     view files.  Examples of useful settings (place into your <.vimrc>): >
 
-	:let g:netrw_browsex_viewer= "kfmclient exec"
-<   or >
-	:let g:netrw_browsex_viewer= "xdg-open"
-<
-    If g:netrw_browsex_viewer == '-', then netrwFileHandlers#Invoke() will be
-    used instead (see |netrw_filehandler|).
-
     If the viewer you wish to use does not support handling of a remote URL
     directory, set |g:netrw_browsex_support_remote| to 0.
-  * for Windows 32 or 64, the URL and FileProtocolHandler dlls are used.
-  * for Gnome (with gnome-open): gnome-open is used.
-  * for KDE (with kfmclient)   : kfmclient is used
-  * for Mac OS X               : open is used.
+  * for Windows		      : explorer.exe is used
+  * for Mac OS X              : open is used.
+  * for Linux		      : xdg-open is used.
   * otherwise the netrwFileHandler plugin is used.
 
 The file's suffix is used by these various approaches to determine an
@@ -1520,46 +1514,6 @@ Associated setting variables:
 	|g:netrw_gx|	control how gx picks up the text under the cursor
 	|g:netrw_nogx|	prevent gx map while editing
 	|g:netrw_suppress_gx_mesg| controls gx's suppression of browser messages
-
-							*netrw_filehandler*
-
-When |g:netrw_browsex_viewer| exists and is "-", then netrw will attempt to
-handle the special file with a vim function.  The "x" map applies a function
-to a file, based on its extension.  Of course, the handler function must exist
-for it to be called!
->
- Ex. mypgm.html   x -> NFH_html("scp://user@host/some/path/mypgm.html")
-
-<	Users may write their own netrw File Handler functions to
-	support more suffixes with special handling.  See
-	<autoload/netrwFileHandlers.vim> for examples on how to make
-	file handler functions.   As an example: >
-
-	" NFH_suffix(filename)
-	fun! NFH_suffix(filename)
-	..do something special with filename..
-	endfun
-<
-These functions need to be defined in some file in your .vim/plugin
-(vimfiles\plugin) directory.  Vim's function names may not have punctuation
-characters (except for the underscore) in them.  To support suffices that
-contain such characters, netrw will first convert the suffix using the
-following table: >
-
-    @ -> AT       ! -> EXCLAMATION    % -> PERCENT
-    : -> COLON    = -> EQUAL          ? -> QUESTION
-    , -> COMMA    - -> MINUS          ; -> SEMICOLON
-    $ -> DOLLAR   + -> PLUS           ~ -> TILDE
-<
-So, for example: >
-
-	file.rcs,v  ->  NFH_rcsCOMMAv()
-<
-If more such translations are necessary, please send me email: >
-		NcampObell@SdrPchip.AorgM-NOSPAM
-with a request.  (remove the embedded NOSPAM first)
-
-Associated setting variable: |g:netrw_browsex_viewer|
 
 							*netrw-curdir*
 DELETING BOOKMARKS					*netrw-mB* {{{2
