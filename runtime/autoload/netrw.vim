@@ -5428,9 +5428,9 @@ fun! netrw#BrowseX(fname,remote)
 
   if exists("g:netrw_browsex_viewer") && executable(viewer)
 "   call Decho("(netrw#BrowseX) g:netrw_browsex_viewer<".g:netrw_browsex_viewer.">",'~'.expand("<slnum>"))
-    exe 'Launch' viewer viewopt s:ShellEscape(fname,1)
+    exe 'Launch' viewer viewopt escape(fname, '#%')
   else
-    exe 'Open' fname
+    exe 'Open' escape(fname, '#%')
   endif
 
   " cleanup: remove temporary file,
