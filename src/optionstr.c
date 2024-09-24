@@ -1635,6 +1635,35 @@ expand_set_completeopt(optexpand_T *args, int *numMatches, char_u ***matches)
 	    matches);
 }
 
+/*
+ * The 'completeitemalgin' option is changed.
+ */
+    char *
+did_set_completeitemalign(optset_T *args UNUSED)
+{
+    char_u *p = p_cia;
+    unsigned new_cia_flags = 0;
+    while (*p != NUL)
+    {
+	if (STRNCMP(p, "abbr", 4) == 0)
+	    new_cia_flags = new_cia_flags * 10 + CPT_ABBR;
+	else if (STRNCMP(p, "kind", 4) == 0)
+	    new_cia_flags = new_cia_flags * 10 + CPT_KIND;
+	else if (STRNCMP(p, "menu", 4) == 0)
+	    new_cia_flags = new_cia_flags * 10 + CPT_MENU;
+	else
+	    return e_invalid_argument;
+
+        p = vim_strchr(p, ',');
+	if (p == NULL)
+	    break;
+        if (*p == ',')
+            p++;
+    }
+    cia_flags = new_cia_flags;
+    return NULL;
+}
+
 #if (defined(FEAT_PROP_POPUP) && defined(FEAT_QUICKFIX)) || defined(PROTO)
 /*
  * The 'completepopup' option is changed.
