@@ -25,7 +25,7 @@
 "   2024 Aug 22 by Vim Project: adjust echo output of mx command (#15550)
 "   2024 Sep 15 by Vim Project: more strict confirmation dialog (#15680)
 "   2024 Sep 21 by Vim Project: remove extraneous closing bracket (#15718)
-"   2024 Sep 22 by Vim Project: clean up gx mapping
+"   2024 Sep 22 by Vim Project: clean up and expand gx mapping
 "   }}}
 " Former Maintainer:	Charles E Campbell
 " GetLatestVimScripts: 1075 1 :AutoInstall: netrw.vim
@@ -5469,11 +5469,51 @@ fun! netrw#GX()
   if &ft == "netrw"
    let fname= s:NetrwGetWord()
   else
-   let fname= expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>'))
+   let fname= exists("g:netrw_gx")? expand(g:netrw_gx) : s:GetURL()
   endif
 "  call Dret("netrw#GX <".fname.">")
   return fname
 endfun
+
+fun! s:GetURL() abort
+  " markdown URL such as [link text](http://ya.ru 'yandex search')
+  try
+    let save_view = winsaveview()
+    if searchpair('\[.\{-}\](', '', ')\zs', 'cbW', '', line('.')) > 0
+      return matchstr(getline('.')[col('.')-1:], '\[.\{-}\](\zs'..s:regex_url..'\ze\(\s\+.\{-}\)\?)')
+    endif
+  finally
+    call winrestview(save_view)
+  endtry
+  " HTML URL such as <a href='http://www.python.org'>Python is here</a>
+  "                  <a href="http://www.python.org"/>
+  try
+    let save_view = winsaveview()
+    if searchpair('<a\s\+href=', '', '\%(</a>\|/>\)\zs', 'cbW', '', line('.')) > 0
+      return matchstr(getline('.')[col('.') - 1 : ],
+            \ 'href=["'.."'"..']\?\zs\S\{-}\ze["'.."'"..']\?/\?>')
+    endif
+    finally
+      call winrestview(save_view)
+    endtry
+  " URL with leading or closing parenthesis (http://google.com)
+  let URL = matchstr(expand("<cWORD>"), '^(\?\zs'..s:regex_url..'\ze)\?$')
+  if !empty(URL) | return URL | endif
+
+  " Is it a file in the current work dir ...
+  let file = expand("<cfile>")
+  if filereadable(file) | return file | endif
+  " ... or in that of the current buffer?
+  let path = expand('%')
+  if isdirectory(path)
+    let dir = fnamemodify(path, ':p')
+  elseif filereadable(path)
+    let dir = fnamemodify(path, ':p:h')
+  endif
+  if exists('dir') && filereadable(dir..'/'..file) | return dir..'/'..file | endif
+
+  return ''
+endf
 
 " ---------------------------------------------------------------------
 " netrw#BrowseXVis: used by gx in visual mode to select a file for browsing {{{2
